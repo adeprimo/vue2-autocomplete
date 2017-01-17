@@ -3,7 +3,7 @@
   <div :class="(className ? className + '-wrapper ' : '') + 'autocomplete-wrapper'">
     <input  type="text"
             :id="id"
-            :class="(className ? className + '-input ' : '') + 'autocomplete-input'"
+            :class="(type ? 'set ' : '') + (className ? className + ' ' : '') + 'autocomplete-input'"
             :placeholder="placeholder"
             v-model="type"
             @input="input(type)"
@@ -12,6 +12,7 @@
             @keydown="keydown"
             @focus="focus"
             autocomplete="off" />
+            <label :for="id">{{ label }}</label>
 
     <div :class="(className ? className + '-list ' : '') + 'autocomplete transition autocomplete-list'" v-show="showList">
       <ul>
@@ -23,7 +24,6 @@
               @click.prevent="selectList(data)"
               @mousemove="mousemove(i)">
             <b>{{ data[anchor] }}</b>
-            <span>{{ data[label] }}</span>
           </a>
 
         </li>
@@ -151,7 +151,7 @@
         setTimeout(() => {
 
           // Callback Event
-          this.onHide ? this.onHide() : null
+          this.onHide ? this.onHide(e) : null
 
           this.showList = false;
         },250);
@@ -161,6 +161,7 @@
         this.focusList = 0;
 
         // Callback Event
+        this.showAll();
         this.onFocus ? this.onFocus(e) : null
       },
 
@@ -214,7 +215,7 @@
         * Callback Event
         * Deep clone of the original object
         */
-        this.onSelect ? this.onSelect(clean) : null
+        this.onSelect ? this.onSelect(clean, this) : null
       },
 
       getData(val){
@@ -225,7 +226,7 @@
         if(this.url != null){
 
           // Callback Event
-          this.onBeforeAjax ? this.onBeforeAjax(val) : null
+          this.onBeforeAjax ? this.onBeforeAjax(val, this) : null
 
           let ajax = new XMLHttpRequest();
 
@@ -253,7 +254,7 @@
             // Callback Event
             this.onAjaxLoaded ? this.onAjaxLoaded(json) : null
 
-            self.json = json;
+            self.json = json.items;
           });
 
         }
