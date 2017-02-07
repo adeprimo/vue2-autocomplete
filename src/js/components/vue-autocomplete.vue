@@ -16,17 +16,15 @@
 
     <div :class="(className ? className + '-list ' : '') + 'autocomplete transition autocomplete-list'" v-show="showList">
       <ul>
-        <li v-for="(data, i) in json"
-            transition="showAll"
-            :class="activeClass(i)">
-
-          <a  href="#"
-              @click.prevent="selectList(data)"
-              @mousemove="mousemove(i)">
-            <b>{{ data[anchor] }}</b>
-          </a>
-
-        </li>
+        <template v-for="(data, i) in json" transition="showAll">
+          <li :class="activeClass(i)">
+            <a  href="#"
+                @click.prevent="selectList(data)"
+                @mousemove="mousemove(i)">
+              <b>{{ data[anchor] }}</b>
+            </a>
+          </li>
+        </template>
       </ul>
     </div>
   </div>
@@ -158,7 +156,7 @@
       },
 
       focus(e){
-        this.focusList = 0;
+        this.focusList = -1;
 
         // Callback Event
         this.showAll();
@@ -178,23 +176,25 @@
         switch (key) {
           case 40: //down
             this.focusList++;
+            this.type = this.json[this.focusList][this.anchor];
           break;
           case 38: //up
             this.focusList--;
+            this.type = this.json[this.focusList][this.anchor];
           break;
           case 13: //enter
-            this.selectList(this.json[this.focusList])
             this.showList = false;
+            document.getElementById(this.id).blur();
           break;
           case 27: //esc
             this.showList = false;
+            document.getElementById(this.id).blur();
           break;
         }
 
         // When cursor out of range
-        let listLength = this.json.length - 1;
+        let listLength = this.json.length;
         this.focusList = this.focusList > listLength ? 0 : this.focusList < 0 ? listLength : this.focusList;
-
       },
 
       activeClass(i){
@@ -248,13 +248,16 @@
             }
           });
 
+          var that = this;
           ajax.addEventListener('loadend', function (data) {
             let json = JSON.parse(this.responseText);
 
             // Callback Event
             this.onAjaxLoaded ? this.onAjaxLoaded(json) : null
 
-            self.json = json.items;
+            self.json = json.items.filter(function (data) {
+              return data[that.anchor] != that.type;
+            });
           });
 
         }

@@ -157,8 +157,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	//
 	//
 	//
-	//
-	//
 
 
 	/*! Copyright (c) 2016 Naufal Rabbani (http://github.com/BosNaufal)
@@ -283,7 +281,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }, 250);
 	    },
 	    focus: function focus(e) {
-	      this.focusList = 0;
+	      this.focusList = -1;
 
 	      // Callback Event
 	      this.showAll();
@@ -302,24 +300,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case 40:
 	          //down
 	          this.focusList++;
+	          this.type = this.json[this.focusList][this.anchor];
 	          break;
 	        case 38:
 	          //up
 	          this.focusList--;
+	          this.type = this.json[this.focusList][this.anchor];
 	          break;
 	        case 13:
 	          //enter
-	          this.selectList(this.json[this.focusList]);
 	          this.showList = false;
+	          document.getElementById(this.id).blur();
 	          break;
 	        case 27:
 	          //esc
 	          this.showList = false;
+	          document.getElementById(this.id).blur();
 	          break;
 	      }
 
 	      // When cursor out of range
-	      var listLength = this.json.length - 1;
+	      var listLength = this.json.length;
 	      this.focusList = this.focusList > listLength ? 0 : this.focusList < 0 ? listLength : this.focusList;
 	    },
 	    activeClass: function activeClass(i) {
@@ -373,13 +374,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	        });
 
+	        var that = this;
 	        ajax.addEventListener('loadend', function (data) {
 	          var json = JSON.parse(this.responseText);
 
 	          // Callback Event
 	          this.onAjaxLoaded ? this.onAjaxLoaded(json) : null;
 
-	          self.json = json.items;
+	          self.json = json.items.filter(function (data) {
+	            return data[that.anchor] != that.type;
+	          });
 	        });
 	      }
 	    },
@@ -442,12 +446,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      expression: "showList"
 	    }],
 	    class: (_vm.className ? _vm.className + '-list ' : '') + 'autocomplete transition autocomplete-list'
-	  }, [_c('ul', _vm._l((_vm.json), function(data, i) {
-	    return _c('li', {
-	      class: _vm.activeClass(i),
-	      attrs: {
-	        "transition": "showAll"
-	      }
+	  }, [_c('ul', [_vm._l((_vm.json), function(data, i) {
+	    return [_c('li', {
+	      class: _vm.activeClass(i)
 	    }, [_c('a', {
 	      attrs: {
 	        "href": "#"
@@ -461,8 +462,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          _vm.mousemove(i)
 	        }
 	      }
-	    }, [_c('b', [_vm._v(_vm._s(data[_vm.anchor]))])])])
-	  }))])])
+	    }, [_c('b', [_vm._v(_vm._s(data[_vm.anchor]))])])])]
+	  })], 2)])])
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 	if (false) {
