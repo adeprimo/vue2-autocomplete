@@ -212,6 +212,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Callback
 	    onInput: Function,
 	    onShow: Function,
+	    onClick: Function,
 	    onBlur: Function,
 	    onHide: Function,
 	    onFocus: Function,
@@ -279,6 +280,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        _this.showList = false;
 	      }, 250);
+	    },
+	    click: function click(e) {
+	      // Callback Event
+	      this.onClick ? this.onClick(e) : null;
 	    },
 	    focus: function focus(e) {
 	      this.focusList = -1;
@@ -350,8 +355,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (val.length < this.min) return;
 
 	      if (this.url != null) {
-	        var that;
-
 	        (function () {
 
 	          // Callback Event
@@ -379,8 +382,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	              this.onAjaxProgress ? this.onAjaxProgress(data) : null;
 	            }
 	          });
-
-	          that = _this2;
 
 	          ajax.addEventListener('loadend', function (data) {
 	            var json = JSON.parse(this.responseText);
@@ -435,10 +436,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }, function($event) {
 	        _vm.input(_vm.type)
 	      }],
-	      "dblclick": _vm.showAll,
 	      "blur": _vm.hideAll,
 	      "keydown": _vm.keydown,
-	      "focus": _vm.focus
+	      "focus": _vm.focus,
+	      "click": _vm.click
 	    }
 	  }), _vm._v(" "), _c('label', {
 	    attrs: {
