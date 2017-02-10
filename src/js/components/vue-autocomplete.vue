@@ -231,11 +231,14 @@
           let ajax = new XMLHttpRequest();
 
           let params = ""
-          if(this.customParams) {
-            Object.keys(this.customParams).forEach((key) => {
-              params += `&${key}=${this.customParams[key]}`
+            let cb = this.customParams
+          if(cb) {
+            Object.keys(cb).forEach((key) => {
+              params += `&${key}=${cb[key]}`
             })
           }
+
+          params += '&limit=99999'
 
           ajax.open('GET', `${this.url}?${this.param}=${val}${params}`, true);
           ajax.send();
@@ -248,16 +251,13 @@
             }
           });
 
-          var that = this;
           ajax.addEventListener('loadend', function (data) {
             let json = JSON.parse(this.responseText);
 
             // Callback Event
             this.onAjaxLoaded ? this.onAjaxLoaded(json) : null
 
-            self.json = json.items.filter(function (data) {
-              return data[that.anchor] != that.type;
-            });
+            self.json = json.items;
           });
 
         }

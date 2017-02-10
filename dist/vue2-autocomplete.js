@@ -350,41 +350,47 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (val.length < this.min) return;
 
 	      if (this.url != null) {
+	        var that;
 
-	        // Callback Event
-	        this.onBeforeAjax ? this.onBeforeAjax(val, this) : null;
-
-	        var ajax = new XMLHttpRequest();
-
-	        var params = "";
-	        if (this.customParams) {
-	          Object.keys(this.customParams).forEach(function (key) {
-	            params += "&" + key + "=" + _this2.customParams[key];
-	          });
-	        }
-
-	        ajax.open('GET', this.url + "?" + this.param + "=" + val + params, true);
-	        ajax.send();
-
-	        ajax.addEventListener('progress', function (data) {
-	          if (data.lengthComputable) {
-
-	            // Callback Event
-	            this.onAjaxProgress ? this.onAjaxProgress(data) : null;
-	          }
-	        });
-
-	        var that = this;
-	        ajax.addEventListener('loadend', function (data) {
-	          var json = JSON.parse(this.responseText);
+	        (function () {
 
 	          // Callback Event
-	          this.onAjaxLoaded ? this.onAjaxLoaded(json) : null;
+	          _this2.onBeforeAjax ? _this2.onBeforeAjax(val, _this2) : null;
 
-	          self.json = json.items.filter(function (data) {
-	            return data[that.anchor] != that.type;
+	          var ajax = new XMLHttpRequest();
+
+	          var params = "";
+	          var cb = _this2.customParams;
+	          if (cb) {
+	            Object.keys(cb).forEach(function (key) {
+	              params += "&" + key + "=" + cb[key];
+	            });
+	          }
+
+	          params += '&limit=99999';
+
+	          ajax.open('GET', _this2.url + "?" + _this2.param + "=" + val + params, true);
+	          ajax.send();
+
+	          ajax.addEventListener('progress', function (data) {
+	            if (data.lengthComputable) {
+
+	              // Callback Event
+	              this.onAjaxProgress ? this.onAjaxProgress(data) : null;
+	            }
 	          });
-	        });
+
+	          that = _this2;
+
+	          ajax.addEventListener('loadend', function (data) {
+	            var json = JSON.parse(this.responseText);
+
+	            // Callback Event
+	            this.onAjaxLoaded ? this.onAjaxLoaded(json) : null;
+
+	            self.json = json.items;
+	          });
+	        })();
 	      }
 	    },
 	    setValue: function setValue(val) {
