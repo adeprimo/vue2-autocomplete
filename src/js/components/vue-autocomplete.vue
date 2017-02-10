@@ -7,10 +7,10 @@
             :placeholder="placeholder"
             v-model="type"
             @input="input(type)"
-            @dblclick="showAll"
             @blur="hideAll"
             @keydown="keydown"
             @focus="focus"
+            @click="click"
             autocomplete="off" />
             <label :for="id">{{ label }}</label>
 
@@ -86,6 +86,7 @@
       // Callback
       onInput: Function,
       onShow: Function,
+      onClick: Function,
       onBlur: Function,
       onHide: Function,
       onFocus: Function,
@@ -153,6 +154,11 @@
 
           this.showList = false;
         },250);
+      },
+
+      click(e){
+        // Callback Event
+        this.onClick ? this.onClick(e) : null
       },
 
       focus(e){
