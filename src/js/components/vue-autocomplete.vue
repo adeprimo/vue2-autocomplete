@@ -262,6 +262,9 @@
 
             // Callback Event
             this.onAjaxLoaded ? this.onAjaxLoaded(json) : null
+            
+            // Make the typed request show up as first result in the list.
+            json.items.splice(0, 0, {'name': val, 'slug': val});
 
             self.json = json.items;
           });
